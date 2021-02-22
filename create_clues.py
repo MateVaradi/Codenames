@@ -1,5 +1,5 @@
 """
-Using W2V and GloVe embeddings for automatic clue generation for Code Names.
+Using W2V embeddings for automatic clue generation for Code Names.
 
 """
 # Imports
@@ -269,9 +269,6 @@ class CNbot:
 
         print('Clue generation took', round(time.time() - t0, 1), ' seconds.')
 
-
-# TODO: test if train embeddings works
-#
 
 # Board examples
 board_easy_0 = {

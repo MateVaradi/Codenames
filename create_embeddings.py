@@ -11,6 +11,8 @@ from nltk.tokenize import word_tokenize
 from gensim.models import FastText
 import time
 import re
+import nltk
+nltk.download('punkt')
 
 def clean_document(doc):
     # Make lowercase
