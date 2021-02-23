@@ -9,7 +9,6 @@ import numpy as np
 from functools import reduce
 from operator import iconcat
 from itertools import combinations
-import create_embeddings
 import os
 
 # Settings
@@ -62,16 +61,6 @@ class CNbot:
         w2v = fasttext_model.wv
         del fasttext_model
         return w2v
-
-    def get_embeddings(self, model_version):
-        if os.listdir('embeddings/'):
-            print("The model has no version: ", model_version, ". The following model versions are available:")
-            print(list(set([filename.split('.')[0] for filename in os.listdir('embeddings/')])))
-        else:
-            print("No model embeddings exist yet. Runnning create_embeddings.py")
-            create_embeddings
-            model_version = sorted(os.listdir('embeddings/'), key=len)[0]
-        return model_version
 
     def update_board(self, new_board):
         self.current_board = new_board
