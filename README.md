@@ -14,9 +14,9 @@ Apart from standard Python data science libraries you will need to have `nltk` a
      - https://www.kaggle.com/manosss/san-francisco-chronicle-articles-dataset
      - https://www.kaggle.com/pariza/bbc-news-summary
 2. Run `create_embeddings.py`. This will take some time to run.
-3. Run the examples from `create_clues.py` to see how the clue generation works and start creating clues for your own Codenames board.\
+3. Run the examples from `create_clues.py` to see how the clue generation works and start creating clues for your own Codenames board.
 
-
+<br/>
 
  
 ![Codenames board example](https://github.com/MateVaradi/Codenames/blob/main/illustrations/SetUp.jpg)
