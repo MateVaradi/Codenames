@@ -19,7 +19,7 @@ class CNbot:
 
     # Init
     def __init__(self, starting_board, our_color,
-                 model_version='ft_0'):
+                 model_version='ft_1'):
         self.starting_board = starting_board
         self.current_board = starting_board
         self.our_color = our_color
@@ -64,6 +64,17 @@ class CNbot:
 
     def update_board(self, new_board):
         self.current_board = new_board
+        self.y1_t = self.current_board[self.their_color]  # opponent's card
+        self.y2_t = self.current_board["black"]  # black cards
+        self.y3_t = self.current_board["beige"]  # beige cards
+        self.y_t = self.y1_t + [self.y2_t] + self.y3_t
+        self.num_y1_t = len(self.y1_t)
+        self.num_y2_t = len(self.y2_t)
+        self.num_y3_t = len(self.y3_t)
+        self.num_y_t = self.num_y3_t + self.num_y3_t + self.num_y3_t  # number of cards we don't have to guess
+        self.x_t = self.current_board[self.our_color]  # remaining words that our team has to guess
+        self.num_x_t = len(self.x_t)  # number of words our team has to guess
+        self.all_cards = self.x_t + self.y_t
 
     def show_current_game(self):
         print('We (team ', self.our_color, ') have ', self.num_x_t, ' cards left to guess.')
@@ -74,19 +85,20 @@ class CNbot:
         print('red:', self.y1_t)
         print('black:', self.y2_t)
         print('beige:', self.y3_t)
+        print('\n')
 
     def get_clues(self, method, method_params, num_clues=10, max_m=4):
 
         if method == "ST":
             if method_params:
-                self.ST_clues(method_params, num_clues=num_clues, max_m=max_m)
+                self.ST_clues(method_params=method_params, num_clues=num_clues, max_m=max_m)
             else:
                 self.ST_clues(num_clues=num_clues, max_m=max_m)
         elif method == "WSD":
             if (not hasattr(self, 'X')) or (not hasattr(self, 'Y')):
                 self.load_similarity_matrix()
             if method_params:
-                self.WSD_clues(method_params, num_clues=num_clues, max_m=max_m)
+                self.WSD_clues(method_params=method_params, num_clues=num_clues, max_m=max_m)
             else:
                 self.WSD_clues(num_clues=num_clues, max_m=max_m)
         else:
@@ -115,7 +127,7 @@ class CNbot:
         return S
 
     # Similarity Threshold method
-    def ST_clues(self, num_clues=20, max_m=4, method_params=(0.3, 0.15, 0.8, 0.2)):
+    def ST_clues(self, num_clues, max_m, method_params=(0.3, 0.15, 0.8, 0.2)):
         """
         Prints num_clues word clues, the number of cards for each clue
 
@@ -181,6 +193,7 @@ class CNbot:
                   ", score:", round(elem[2], 2))
 
         print('Clue generation took', round(time.time() - t0, 1), ' seconds.')
+        print('\n')
 
     def match_clue_candidate(self, a, poss_idx, r=0.05):
         """
@@ -205,7 +218,7 @@ class CNbot:
         return (s, m)
 
     # Weighted Similarity Difference method
-    def WSD_clues(self, num_clues=20, max_m=4, method_params=(1, 1.4, 0.3, 0.05)):
+    def WSD_clues(self, num_clues, max_m, method_params=(1, 1.4, 0.3, 0.05)):
         """
         Prints num_clues word clues, the number of cards for each clue and the margins
 
@@ -257,35 +270,37 @@ class CNbot:
             i += 1
 
         print('Clue generation took', round(time.time() - t0, 1), ' seconds.')
+        print('\n')
 
 
-# Board examples
-board_easy_0 = {
-    'blue': ['chicken', 'pork', 'beef', 'football',
-             'player', 'drill', 'apple', 'strawberry', 'peach'],
-    'red': ['cat', 'nut', 'berlin', 'cliff',
-            'hotel', 'dog', 'block', 'fish'],
-    'black': 'tokyo',
-    'beige': ['horse', 'dinosaur', 'ninja', 'plate', 'button',
-              'tube', 'stadium']
-}
+# Example run
 
+# Initial board example
 board_0 = {'blue': ['bank', 'limousine', 'plastic', 'stadium', 'drill', 'moon', 'stick', 'forest', 'china'],
            'red': ['nut', 'hotel', 'berlin', 'slug', 'dog', 'cliff', 'block', 'fish'],
            'black': 'tokyo',
            'beige': ['horse', 'dinosaur', 'ninja', 'plate', 'button', 'tube', 'spot']}
 
-board = {
-    'blue': ['chicken', 'pork', 'beef', 'football',
-             'apple', 'strawberry', 'peach'],
-    'red': ['cat', 'nut',
-            'hotel', 'dog', 'block', 'fish'],
+# Board after a few rounds
+board_t = {
+    'blue': ['plastic', 'stadium', 'drill', 'moon', 'stick', 'forest', ],
+    'red': ['nut', 'hotel', 'dog', 'block', 'fish'],
     'black': 'tokyo',
-    'beige': ['horse', 'dinosaur', 'ninja', 'button',
-              'tube', 'stadium']
+    'beige': ['horse', 'dinosaur', 'ninja', 'button', 'tube', 'stadium']
 }
 
-game = CNbot(board_0, 'blue')
-# game.get_clues('WSD', [])
+# Initialize Codenames bot
+game = CNbot(board_0, our_color='blue')
 game.show_current_game()
+
+# Try both methods to get clues:
+# 1) Weighted Similarity Distance
+game.get_clues(method='WSD', num_clues=5, max_m=4, method_params=(1, 1.4, 0.3, 0.05))
+# 2) Similarity Threshold
+game.get_clues(method='ST', num_clues=5, max_m=4, method_params=(0.3, 0.15, 0.8, 0.2))
+
+# Update board after some cards have been quessed
+game.update_board(board_t)
+game.show_current_game()
+
 
