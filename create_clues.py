@@ -253,7 +253,6 @@ class CNbot:
         clue_nums = beta_and_clue_nums[:, 1]
         del beta_and_clue_nums
         delta = beta - gamma
-        delta[[self.model_vocab.index(card) for card in self.all_cards]] = -np.inf  # Exclude words from the board
 
         # Print clues
         i = 1
@@ -295,7 +294,7 @@ game.show_current_game()
 
 # Try both methods to get clues:
 # 1) Weighted Similarity Distance
-game.get_clues(method='WSD', num_clues=5, max_m=4, method_params=(1, 1.4, 0.3, 0.05))
+game.get_clues(method='WSD', num_clues=5, max_m=4, method_params=(1, 1.4, 0.8, 0.05))
 # 2) Similarity Threshold
 game.get_clues(method='ST', num_clues=5, max_m=4, method_params=(0.3, 0.15, 0.8, 0.2))
 
@@ -303,4 +302,22 @@ game.get_clues(method='ST', num_clues=5, max_m=4, method_params=(0.3, 0.15, 0.8,
 game.update_board(board_t)
 game.show_current_game()
 
+###
 
+board_3 = {'blue':['copper','ivory','compound','beer','vet','pirate','drill','pumpkin'],
+           'red' : ['fair','superior','litter','wash','olive','cycle','paste','china','lead'],
+            'black' : 'air',
+           'beige' : ['air','oil','england','ring','point','slip','duck']
+}
+
+## -------------------------------------------------------------------------------------
+## Playground for you:
+board_2 = {
+    'blue': ['chicken', 'pork', 'beef', 'olympus',
+             'player', 'drill', 'apple', 'strawberry', 'peach'],
+    'red': ['cat', 'nut', 'berlin', 'cliff',
+            'hotel', 'dog', 'block', 'fish'],
+    'black': 'tokyo',
+    'beige': ['horse', 'dinosaur', 'ninja', 'plate', 'button',
+              'tube', 'stadium']
+}
